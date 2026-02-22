@@ -1,0 +1,46 @@
+trigger: none
+pool:
+  vmImage: ubuntu-24.04
+
+resources:
+  repositories:
+    - repository: Templates
+      type: git
+      name: Templates
+      ref: refs/heads/fix-iac-always-logging
+variables:
+  # - group: "Emergency Blocking Bypass Settings"
+  - group: Snyk-Snyk-Lab
+  - group: AppSec-Utilities
+
+steps:
+  # - checkout: self
+  #   displayName: 'Checkout Application Code'
+
+  # ============================================================
+  # SAST SCAN - No dependencies needed, runs on source code
+  # ============================================================
+
+  - template: Snyk/pre-build-security.yml@Templates
+    parameters:
+      snykServiceConnection: "Snyk-Lab"
+      applicationId: "XY0001234"
+
+  # ============================================================
+  # SCA SCAN - Requires dependencies to be installed first
+  # https://docs.snyk.io/developer-tools/snyk-cli/scan-and-maintain-projects-using-the-cli/snyk-cli-for-open-source/open-source-projects-that-must-be-built-before-testing-with-the-snyk-cli
+  # ============================================================
+
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.x"
+
+  - script: |
+      pip install --upgrade pip
+      pip install -r vuln-api-sca/requirements.txt  # $(Build.SourcesDirectory)/$(Build.Repository.Name)/
+    displayName: "Install Python Dependencies"
+
+  - template: Snyk/post-build-security.yml@Templates
+    parameters:
+      snykServiceConnection: "Snyk-Lab"
+      applicationId: "XY0001234"
