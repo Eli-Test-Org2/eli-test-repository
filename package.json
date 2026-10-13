@@ -1,0 +1,9 @@
+{
+  "name": "eli-test-repository",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@eli-test-org2/tiny": "1.0.0",
+    "lodash": "4.17.20"
+  }
+}
