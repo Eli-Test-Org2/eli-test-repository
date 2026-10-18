@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@eli-test-org2/tiny": "1.0.2"
+    "@eli-test-org2/tiny": "1.1.0"
   }
 }
